@@ -1,4 +1,5 @@
 from random import randint
+from string import digits
 
 from faker import Faker
 
@@ -13,6 +14,7 @@ fake = Faker('pt_BR')
 
 def make_recipe():
     return {
+        'id': fake.random_number(digits=2, fix_len=True),
         'title': fake.sentence(nb_words=6),
         'description': fake.sentence(nb_words=12),
         'preparation_time': fake.random_number(digits=2, fix_len=True),
