@@ -1,3 +1,6 @@
 from django.test import TestCase
 
-# Create your tests here.
+
+class RecipesUrlFast(TestCase):
+    def test_pytest(self):
+        assert 1 == 1, 'Um é igual a um'
