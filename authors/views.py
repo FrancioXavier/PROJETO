@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.http import Http404
+from django.shortcuts import redirect, render
 
 from .forms import registerForm
 
@@ -6,11 +7,19 @@ from .forms import registerForm
 
 
 def register_view(request):
-
-    if request.POST:
-        form = registerForm(request.POST)
-    else:
-        form = registerForm()
+    register_form_data = request.session.get('register_form_data', None)
+    form = registerForm(register_form_data)
     return render(request, 'authors/pages/register_view.html', {
         'form': form,
     })
+
+
+def register_create(request):
+    if not request.POST:
+        raise Http404()
+
+    POST = request.POST
+    request.session['register_form_data'] = POST
+    # form = registerForm(request.POST)
+
+    return redirect('authors:register')
