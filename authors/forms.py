@@ -34,11 +34,11 @@ class registerForm(forms.ModelForm):
         add_placeholder(self.fields['email'], 'Your e-mail')
         add_placeholder(self.fields['first_name'], 'Your first name')
         add_placeholder(self.fields['last_name'], 'Your last name')
+        add_placeholder(self.fields['password'], 'Type your password')
+        add_placeholder(self.fields['password2'], 'Repeat your password')
 
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Your password'
-        }),
+        widget=forms.PasswordInput(),
         error_messages={
             'required': 'password must not be empty'
         },
@@ -49,9 +49,8 @@ class registerForm(forms.ModelForm):
         validators=[strong_password]
     )
     password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'placeholder': 'Repeat your password'
-        }),
+        required=True,
+        widget=forms.PasswordInput()
     )
 
     class Meta:
@@ -81,15 +80,6 @@ class registerForm(forms.ModelForm):
             'username': {
                 'required': 'This field must be empty.'
             }
-        }
-
-        widgets = {
-            'first_name': forms.TextInput(attrs={
-                'placeholder': 'Type your first name (duh)'
-            }),
-            'password': forms.PasswordInput(attrs={
-                'placeholder': 'Type your password'
-            }),
         }
 
     def clean_password(self):
