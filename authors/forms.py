@@ -71,6 +71,17 @@ class registerForm(forms.ModelForm):
             'required': 'password2 must not be empty'
         },
     )
+    username = forms.CharField(
+        label='Username',
+        help_text='Username must have letters, numbers or one of those @.+-_. '  # noqa 501
+        'the lenght should be between 4 and 50 characters.',
+        error_messages={
+            'required': 'This field must not be empty.',
+            'min_length': 'This field must have at least 4 characters',
+            'max_length': 'This field must have less or equal 50 characters'
+        },
+        min_length=4, max_length=50,
+    )
 
     class Meta:
         model = User
@@ -82,16 +93,6 @@ class registerForm(forms.ModelForm):
             'email',
 
         ]
-
-        labels = {
-            'username': 'Username'
-        }
-
-        error_messages = {
-            'username': {
-                'required': 'This field must not be empty.'
-            }
-        }
 
     def clean(self):
         cleaned_data = super().clean()

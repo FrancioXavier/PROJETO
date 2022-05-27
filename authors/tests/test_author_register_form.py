@@ -25,7 +25,9 @@ class AuthorRegisterFormUnitTest(TestCase):
         ('password', 'password must have one uppercase letter, one '
          'lower case letter, and a number'),
         ('email', 'The email must be valid.'),
-        ('username', 'Obrigatório. 150 caracteres ou menos. Letras, números e @/./+/-/_ apenas.')  # noqa 501
+        ('username',
+                    'Username must have letters, numbers or one of those @.+-_. '  # noqa 501
+                    'the lenght should be between 4 and 50 characters.')
     ])
     def test_help_text_is_correct(self, field, needed):
         form = registerForm()
@@ -73,3 +75,21 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         response = self.client.post(url, data=self.form_data, follow=True)
         self.assertIn(msg, response.content.decode('utf-8'))
         self.assertIn(msg, response.context['form'].errors.get(field))
+
+    def test_username_field_is_in_min_lenght(self):
+        self.form_data['username'] = 'aaa'
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+
+        msg = 'This field must have at least 4 characters'
+        self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get('username'))
+
+    def test_username_field_is_in_max_lenght(self):
+        self.form_data['username'] = 'a'*51
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+
+        msg = 'This field must have less or equal 50 characters'
+        self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get('username'))
