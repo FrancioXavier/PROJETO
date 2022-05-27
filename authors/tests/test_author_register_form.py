@@ -93,3 +93,52 @@ class AuthorRegisterFormIntegrationTest(DjangoTestCase):
         msg = 'This field must have less or equal 50 characters'
         self.assertIn(msg, response.content.decode('utf-8'))
         self.assertIn(msg, response.context['form'].errors.get('username'))
+
+    def test_strong_password_error_if_the_password_is_not_strong(self):
+        self.form_data['password'] = 'a'
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+
+        msg = 'Password must have at least one uppercase letter, one lowercase letter and one number. The length should be at least 8 characters.'  # noqa 501
+        self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get('password'))
+
+    def test_strong_password_is_correct(self):
+        self.form_data['password'] = '@A123abc123'
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+
+        msg = (
+            'Password must have at least one uppercase letter, '
+            'one lowercase letter and one number. The length should be '
+            'at least 8 characters.'
+        )
+
+        self.assertNotIn(msg, response.context['form'].errors.get('password'))
+
+    def test_password_and_password2_is_not_equal_error(self):
+        self.form_data['password'] = 'Batata123'
+        self.form_data['password2'] = 'Batata12'
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+
+        msg = 'Password and password2 must be equal'
+        self.assertIn(msg, response.content.decode('utf-8'))
+        self.assertIn(msg, response.context['form'].errors.get('password'))
+        self.assertIn(msg, response.context['form'].errors.get('password2'))
+
+    def test_password_and_password2_is_equal(self):
+        self.form_data['password'] = '@A123abc123'
+        self.form_data['password2'] = '@A123abc123'
+
+        url = reverse('authors:create')
+        response = self.client.post(url, data=self.form_data, follow=True)
+
+        msg = 'Password and password2 must be equal'
+        self.assertNotIn(msg, response.content.decode('utf-8'))
+
+    def test_the_request_is_not_post_raise_error_404(self):
+        url = reverse('authors:create')
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 404)
