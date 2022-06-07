@@ -6,7 +6,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from recipes.models import Recipe
 
-from .forms import LoginForm, registerForm
+from .forms import EditRecipeForm, LoginForm, registerForm
 
 # Create your views here.
 
@@ -100,11 +100,16 @@ def edit_recipe(request, id):
         is_published=False,
         author=request.user,
         pk=id,
-    )
+    ).first()
 
     if not recipes:
         raise Http404()
 
-    return render(request, 'authors/pages/edit_recipe.html', context={
+    form = EditRecipeForm(
+        data=request.POST or None,
+        instance=recipes,
+    )
 
+    return render(request, 'authors/pages/edit_recipe.html', context={
+        'form': form,
     })

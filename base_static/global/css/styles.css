@@ -434,6 +434,10 @@ h6 {
   text-align: center;
 }
 
+.left{
+  text-align: left;
+}
+
 .m-x {
   margin: 0 var(--spacing-gutter-medium);
 }
