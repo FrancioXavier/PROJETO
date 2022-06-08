@@ -154,7 +154,13 @@ def new_recipe(request):
 
 
 @login_required(login_url='authors:login', redirect_field_name='next')
-def delete_recipe(request, id):
+def delete_recipe(request):
+    if not request.POST:
+        raise Http404()
+
+    POST = request.POST
+    id = POST.get('id')
+
     recipes = Recipe.objects.filter(
         is_published=False,
         author=request.user,

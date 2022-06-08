@@ -15,10 +15,11 @@
           <li>
             <a href="{% url 'authors:edit_recipe' recipe.id %}">{{recipe.title}}</a>
             <form 
-            action="{% url 'authors:delete_recipe' recipe.id %}" 
+            action="{% url 'authors:delete_recipe' %}" 
             class="inline-form form-delete" 
             method="POST">
               {% csrf_token %}
+              <input type="hidden" name="id" value="{{ recipe.id }}">
               - <button type="submit" class="plaintext-button">Delete recipe</button>
             </form>
           </li>
