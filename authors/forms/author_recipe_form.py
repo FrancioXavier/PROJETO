@@ -3,7 +3,7 @@ from recipes.models import Recipe
 from utils.django_forms import add_attr
 
 
-class EditRecipeForm(forms.ModelForm):
+class AuthorRecipeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

@@ -1,4 +1,4 @@
 # flake8: noqa
-from .edit_recipe_form import EditRecipeForm
+from .author_recipe_form import AuthorRecipeForm
 from .login import LoginForm
 from .register_forms import registerForm
