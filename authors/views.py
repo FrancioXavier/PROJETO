@@ -145,7 +145,7 @@ def new_recipe(request):
 
         messages.success(request, 'Sua receita foi salva com sucesso.')
 
-        return redirect(reverse('authors:dashboard', args=(id,)))
+        return redirect(reverse('authors:edit_recipe', args=(recipe.id,)))
 
     return render(request, 'authors/pages/create_recipe.html', context={
         'form': form,
