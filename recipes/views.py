@@ -11,7 +11,7 @@ from recipes.models import Recipe
 PER_PAGE = int(os.environ.get('PER_PAGE', 6))
 
 
-class RecipeListView(ListView):
+class RecipeListViewBase(ListView):
     model = Recipe
     context_object_name = 'recipes'
     ordering = ['-id']
@@ -36,6 +36,10 @@ class RecipeListView(ListView):
             'pagination_range': pagination_range
         })
         return context
+
+
+class RecipeListViewHome(RecipeListViewBase):
+    template_name = 'recipes/pages/home.html'
 
 
 def home(request):
