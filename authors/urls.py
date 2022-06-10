@@ -20,7 +20,7 @@ urlpatterns = [
         ),
     path(
         'dashboard/delete/',
-        view=views.delete_recipe,
+        view=views.DashboardRecipeDelete.as_view(),
         name='delete_recipe'
         ),
 ]
