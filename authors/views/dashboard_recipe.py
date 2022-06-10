@@ -9,40 +9,49 @@ from recipes.models import Recipe
 
 
 class DashboardRecipe(View):
-    def get_recipe(self, id):
-        try:
-            recipe = Recipe.objects.filter(
-                is_published=False,
-                author=self.request.user,
-                pk=id,
-            ).first()
+    def get_recipe(self, id=None):
+        recipe = None
 
-        except Recipe.DoesNotExist:
-            raise Http404()
+        if id is not None:
+            try:
+                recipe = Recipe.objects.filter(
+                    is_published=False,
+                    author=self.request.user,
+                    pk=id,
+                ).first()
 
+            except Recipe.DoesNotExist:
+                raise Http404()
         return recipe
 
-    def form(self, id):
-        recipes = self.get_recipe(id)
+    def form(self, id=None):
+        if id:
+            recipes = self.get_recipe(id)
 
-        form = AuthorRecipeForm(
-            data=self.request.POST or None,
-            files=self.request.FILES or None,
-            instance=recipes,
-        )
-        return form
+            form = AuthorRecipeForm(
+                data=self.request.POST or None,
+                files=self.request.FILES or None,
+                instance=recipes,
+            )
+            return form
+        else:
+            form = AuthorRecipeForm(
+                data=self.request.POST or None,
+                files=self.request.FILES or None,
+            )
+            return form
 
     def render(self, request, form):
         return render(request, 'authors/pages/edit_recipe.html', context={
             'form': form,
         })
 
-    def get(self, request, id):
+    def get(self, request, id=None):
         form = self.form(id)
 
         return self.render(request, form)
 
-    def post(self, request, id):
+    def post(self, request, id=None):
         form = self.form(id)
 
         if form.is_valid():
@@ -55,6 +64,10 @@ class DashboardRecipe(View):
             recipe.save()
             messages.success(request, 'Sua receita foi salva com sucesso.')
 
-            return redirect(reverse('authors:edit_recipe', args=(id,)))
+            return redirect(reverse(
+                'authors:edit_recipe', args=(
+                    recipe.id,
+                )
+            ))
 
         return self.render(request, form)

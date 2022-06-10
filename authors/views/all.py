@@ -1,4 +1,4 @@
-from authors.forms import AuthorRecipeForm, LoginForm, registerForm
+from authors.forms import LoginForm, registerForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -90,65 +90,6 @@ def dashboard(request):
     )
     return render(request, 'authors/pages/dashboard.html', context={
         'recipes': recipes,
-    })
-
-
-@login_required(login_url='authors:login', redirect_field_name='next')
-def edit_recipe(request, id):
-    recipes = Recipe.objects.filter(
-        is_published=False,
-        author=request.user,
-        pk=id,
-    ).first()
-
-    if not recipes:
-        raise Http404()
-
-    form = AuthorRecipeForm(
-        data=request.POST or None,
-        files=request.FILES or None,
-        instance=recipes,
-    )
-    if form.is_valid():
-        recipe = form.save(commit=False)
-
-        recipe.author = request.user
-        recipe.preparation_steps_is_html = False
-        recipe.is_published = False
-
-        recipe.save()
-        messages.success(request, 'Sua receita foi salva com sucesso.')
-
-        return redirect(reverse('authors:edit_recipe', args=(id,)))
-
-    return render(request, 'authors/pages/edit_recipe.html', context={
-        'form': form,
-    })
-
-
-@login_required(login_url='authors:login', redirect_field_name='next')
-def new_recipe(request):
-    form = AuthorRecipeForm(
-        data=request.POST or None,
-        files=request.FILES or None,
-    )
-
-    if form.is_valid():
-        recipe = form.save(commit=False)
-
-        recipe.author = request.user
-        recipe.preparation_steps_is_html = False
-        recipe.is_published = False
-
-        recipe.save()
-
-        messages.success(request, 'Sua receita foi salva com sucesso.')
-
-        return redirect(reverse('authors:edit_recipe', args=(recipe.id,)))
-
-    return render(request, 'authors/pages/create_recipe.html', context={
-        'form': form,
-        'form_action': reverse('authors:create_recipe')
     })
 
 
