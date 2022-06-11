@@ -19,7 +19,7 @@ class RecipesCategoryViewsTest(RecipeTestBase):
 
     def test_recipe_category_view_function_is_correct(self):
         view = resolve(reverse('recipes:category', kwargs={'category_id': 1}))
-        self.assertIs(view.func, views.category)
+        self.assertIs(view.func.view_class, views.RecipeListViewCategory)
 
     def test_recipe_category_template_dont_load_recipe_not_published(self):
         '''test recipe with 'is published' False '''
