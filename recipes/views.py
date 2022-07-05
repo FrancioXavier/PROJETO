@@ -1,7 +1,7 @@
 import os
 
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.views.generic import DetailView, ListView
 from utils.recipes.pagination import make_pagination
@@ -40,6 +40,19 @@ class RecipeListViewBase(ListView):
 
 class RecipeListViewHome(RecipeListViewBase):
     template_name = 'recipes/pages/home.html'
+
+
+class RecipeListViewHomeApi(RecipeListViewBase):
+    template_name = 'recipes/pages/home.html'
+
+    def render_to_response(self, context, **response_kwargs):
+        recipes = self.get_context_data()['recipes']
+        recipes_list = recipes.object_list.values()
+
+        return JsonResponse(
+            list(recipes_list),
+            safe=False
+        )
 
 
 class RecipeListViewCategory(RecipeListViewBase):
